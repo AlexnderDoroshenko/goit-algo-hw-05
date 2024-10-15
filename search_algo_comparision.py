@@ -1,4 +1,6 @@
 import timeit
+import pathlib
+import random
 
 
 def boyer_moore(text: str, pattern: str) -> bool:
@@ -106,6 +108,46 @@ def measure_efficiency(text: str, pattern: str) -> None:
     print()
 
 
+def read_file(file_path: str) -> str:
+    with open(file_path, 'rb') as file:
+        b_data = file.read()
+        try:
+            return b_data.decode('utf-8')
+        except UnicodeDecodeError:
+            return b_data.decode('windows-1251')
+
+
+TEST_DATA_DIR = (pathlib.Path(__file__).parent).joinpath("test_data")
+
+# Define file paths
+file_path1 = pathlib.PurePath(TEST_DATA_DIR, "file1.txt")
+file_path2 = pathlib.PurePath(TEST_DATA_DIR, "file2.txt")
+
+# Read contents from files
+text1 = read_file(file_path1)
+text2 = read_file(file_path2)
+
+# substring pattern from text
+substr_len = 10
+random_ind_text1 = random.randrange(0, len(text1) - substr_len + 1)
+random_ind_text2 = random.randrange(0, len(text2) - substr_len + 1)
+text1_pattern = text1[random_ind_text1:random_ind_text1 + substr_len]
+text2_pattern = text2[random_ind_text2:random_ind_text2 + substr_len]
+
+# Test with a pattern that exists
+measure_efficiency(text1, text1_pattern)
+measure_efficiency(text2, text2_pattern)
+
+# Test with a pattern that does not exist
+measure_efficiency(text1, "nonexistent")
+measure_efficiency(text2, "randompattern")
+
+# Test with the same pattern on both texts
+pattern = "пошук"  # Example pattern; adjust based on the content of your files
+measure_efficiency(text1, pattern)
+measure_efficiency(text2, pattern)
+
+
 # Example text for testing
 text1 = "This is a sample text for substring search. This text is for testing the algorithms."
 text2 = "Another example text to test substring search algorithms."
@@ -132,35 +174,66 @@ measure_efficiency(large_text, "abc")  # Should match many times
 """
 Analysis of Algorithms
 
+Python312/python.exe c:/Users/adore/Neoversity/python/Algorithms/goit-algo-hw-05/search_algo_comparision.py
+Testing algorithms for text length 12785 and pattern 'тм пошуку,':
+Boyer-Moore: 0.68855 seconds
+KMP: 2.22999 seconds
+Rabin-Karp: 5.06363 seconds
+
+Testing algorithms for text length 17652 and pattern 'сі додаван':
+Boyer-Moore: 0.49175 seconds
+KMP: 1.28202 seconds
+Rabin-Karp: 2.93947 seconds
+
+Testing algorithms for text length 12785 and pattern 'nonexistent':
+Boyer-Moore: 0.83908 seconds
+KMP: 2.72634 seconds
+Rabin-Karp: 6.12155 seconds
+
+Testing algorithms for text length 17652 and pattern 'randompattern':
+Boyer-Moore: 0.80543 seconds
+KMP: 2.83406 seconds
+Rabin-Karp: 8.38046 seconds
+
+Testing algorithms for text length 12785 and pattern 'пошук':
+Boyer-Moore: 0.03877 seconds
+KMP: 0.06066 seconds
+Rabin-Karp: 0.13780 seconds
+
+Testing algorithms for text length 17652 and pattern 'пошук':
+Boyer-Moore: 0.86096 seconds
+KMP: 1.36082 seconds
+Rabin-Karp: 3.24956 seconds
+
 Testing algorithms for text length 84 and pattern 'substring':
-Boyer-Moore: 0.00371 seconds
-KMP: 0.00581 seconds
-Rabin-Karp: 0.01329 seconds
+Boyer-Moore: 0.00343 seconds
+KMP: 0.00586 seconds
+Rabin-Karp: 0.01447 seconds
 
 Testing algorithms for text length 57 and pattern 'example':
-Boyer-Moore: 0.00233 seconds
-KMP: 0.00297 seconds
-Rabin-Karp: 0.00643 seconds
+Boyer-Moore: 0.00231 seconds
+KMP: 0.00313 seconds
+Rabin-Karp: 0.00545 seconds
 
 Testing algorithms for text length 84 and pattern 'nonexistent':
-Boyer-Moore: 0.00497 seconds
-KMP: 0.01530 seconds
-Rabin-Karp: 0.03015 seconds
+Boyer-Moore: 0.00537 seconds
+KMP: 0.01192 seconds
+Rabin-Karp: 0.03017 seconds
 
 Testing algorithms for text length 57 and pattern 'randompattern':
-Boyer-Moore: 0.00274 seconds
-KMP: 0.00891 seconds
-Rabin-Karp: 0.01956 seconds
+Boyer-Moore: 0.00391 seconds
+KMP: 0.00847 seconds
+Rabin-Karp: 0.02081 seconds
 
 Testing algorithms for text length 6300 and pattern 'abcabc':
-Boyer-Moore: 0.00147 seconds
-KMP: 0.00195 seconds
-Rabin-Karp: 0.00255 seconds
+Boyer-Moore: 0.00155 seconds
+KMP: 0.00193 seconds
+Rabin-Karp: 0.00250 seconds
 
 Testing algorithms for text length 6300 and pattern 'abc':
-Boyer-Moore: 0.00106 seconds
-KMP: 0.00109 seconds
-Rabin-Karp: 0.00174 seconds
+Boyer-Moore: 0.00094 seconds
+KMP: 0.00107 seconds
+Rabin-Karp: 0.00158 seconds
 
 Analysis of Substring Search Algorithms:
 --------------------------------------------------
